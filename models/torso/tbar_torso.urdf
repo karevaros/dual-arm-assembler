@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!-- 양팔 구성용 상체(토르소) — 낮은 T 자형. 기둥형보다 무게중심이 낮고 어깨가 넓다.
+
+  치수(기본): 기둥 0.16×0.16×0.35 m, 어깨 간격 0.60 m(중심간), 어깨 높이 0.33 m.
+  좌표: tbar_base_link 원점 = 베이스 상판에 닿는 면(z=0).
+  ⚠ 형상 잡기용 기본값(실측 아님).
+-->
+<robot name="tbar_torso">
+  <material name="tbar_material"><color rgba="0.58 0.60 0.65 1.0"/></material>
+
+  <link name="tbar_base_link">
+    <visual>
+      <origin xyz="0 0 0.175" rpy="0 0 0"/>
+      <geometry><box size="0.16 0.16 0.35"/></geometry>
+      <material name="tbar_material"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.175" rpy="0 0 0"/>
+      <geometry><box size="0.16 0.16 0.35"/></geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0.175" rpy="0 0 0"/>
+      <mass value="9.0"/>
+      <inertia ixx="0.111" ixy="0" ixz="0" iyy="0.111" iyz="0" izz="0.038"/>
+    </inertial>
+  </link>
+
+  <link name="tbar_shoulder_bar_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.12 0.60 0.10"/></geometry>
+      <material name="tbar_material"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.12 0.60 0.10"/></geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="4.0"/>
+      <inertia ixx="0.123" ixy="0" ixz="0" iyy="0.008" iyz="0" izz="0.125"/>
+    </inertial>
+  </link>
+  <joint name="tbar_shoulder_bar_joint" type="fixed">
+    <parent link="tbar_base_link"/>
+    <child link="tbar_shoulder_bar_link"/>
+    <origin xyz="0 0 0.33" rpy="0 0 0"/>
+  </joint>
+
+  <link name="tbar_shoulder_l_link"/>
+  <joint name="tbar_shoulder_l_joint" type="fixed">
+    <parent link="tbar_shoulder_bar_link"/>
+    <child link="tbar_shoulder_l_link"/>
+    <origin xyz="0 0.30 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="tbar_shoulder_r_link"/>
+  <joint name="tbar_shoulder_r_joint" type="fixed">
+    <parent link="tbar_shoulder_bar_link"/>
+    <child link="tbar_shoulder_r_link"/>
+    <origin xyz="0 -0.30 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="tbar_head_link"/>
+  <joint name="tbar_head_joint" type="fixed">
+    <parent link="tbar_base_link"/>
+    <child link="tbar_head_link"/>
+    <origin xyz="0.06 0 0.42" rpy="0 0 0"/>
+  </joint>
+</robot>

@@ -1,0 +1,15 @@
+# ROS2 워크스페이스 산출물
+build/
+install/
+log/
+
+# 벤더 모델(각 원저작 저장소에서 clone — scripts/setup_vendor_models.sh)
+vendor/
+
+# 조립 결과(사용자별 산출물)
+mounts.yaml
+
+__pycache__/
+*.pyc
+*.egg-info/
+.vscode/

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>dual_arm_assembler</name>
+  <version>0.1.0</version>
+  <description>양팔 로봇 조립기 — 모바일 베이스·상체·팔·그리퍼·센서를 GUI로 결합해 통합 URDF를 만든다</description>
+  <maintainer email="akswnddl255@gmail.com">kim</maintainer>
+  <license>Apache-2.0</license>
+
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

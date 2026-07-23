@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!-- 양팔 구성용 상체(토르소) — 수직 기둥 + 좌/우 어깨 브래킷.
+
+  용도: 모바일 베이스 상판에 세워 두 팔의 어깨 위치를 만든다.
+        arm  슬롯은 torso_shoulder_l_link, arm2 슬롯은 torso_shoulder_r_link 에 붙인다.
+
+  치수(기본): 기둥 Ø0.12 × 0.70 m, 어깨 간격 0.44 m(중심간), 어깨 높이 0.62 m.
+  좌표: torso_base_link 원점 = 베이스 상판에 닿는 면(z=0), +Z 위, +X 전방, +Y 좌측.
+  ⚠ 실측이 아니라 형상 잡기용 기본값이다. 도면이 나오면 이 파일의 수치를 고칠 것.
+-->
+<robot name="column_torso">
+  <material name="torso_material"><color rgba="0.62 0.64 0.68 1.0"/></material>
+
+  <!-- 부착면(베이스 상판) -->
+  <link name="torso_base_link">
+    <visual>
+      <origin xyz="0 0 0.02" rpy="0 0 0"/>
+      <geometry><box size="0.24 0.30 0.04"/></geometry>
+      <material name="torso_material"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.02" rpy="0 0 0"/>
+      <geometry><box size="0.24 0.30 0.04"/></geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0.02" rpy="0 0 0"/>
+      <mass value="4.0"/>
+      <inertia ixx="0.035" ixy="0" ixz="0" iyy="0.024" iyz="0" izz="0.049"/>
+    </inertial>
+  </link>
+
+  <!-- 수직 기둥 -->
+  <link name="torso_column_link">
+    <visual>
+      <origin xyz="0 0 0.35" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.06" length="0.70"/></geometry>
+      <material name="torso_material"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.35" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.06" length="0.70"/></geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0.35" rpy="0 0 0"/>
+      <mass value="8.0"/>
+      <inertia ixx="0.334" ixy="0" ixz="0" iyy="0.334" iyz="0" izz="0.014"/>
+    </inertial>
+  </link>
+  <joint name="torso_column_joint" type="fixed">
+    <parent link="torso_base_link"/>
+    <child link="torso_column_link"/>
+    <origin xyz="0 0 0.04" rpy="0 0 0"/>
+  </joint>
+
+  <!-- 어깨 가로대 -->
+  <link name="torso_shoulder_bar_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.10 0.44 0.08"/></geometry>
+      <material name="torso_material"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.10 0.44 0.08"/></geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="3.0"/>
+      <inertia ixx="0.050" ixy="0" ixz="0" iyy="0.004" iyz="0" izz="0.051"/>
+    </inertial>
+  </link>
+  <joint name="torso_shoulder_bar_joint" type="fixed">
+    <parent link="torso_column_link"/>
+    <child link="torso_shoulder_bar_link"/>
+    <origin xyz="0 0 0.58" rpy="0 0 0"/>
+  </joint>
+
+  <!-- 좌 어깨 부착 프레임: 팔을 바깥(+Y)으로 보게 두려면 여기에 붙이고 RPY 로 각도 조절 -->
+  <link name="torso_shoulder_l_link"/>
+  <joint name="torso_shoulder_l_joint" type="fixed">
+    <parent link="torso_shoulder_bar_link"/>
+    <child link="torso_shoulder_l_link"/>
+    <origin xyz="0 0.22 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- 우 어깨 부착 프레임 -->
+  <link name="torso_shoulder_r_link"/>
+  <joint name="torso_shoulder_r_joint" type="fixed">
+    <parent link="torso_shoulder_bar_link"/>
+    <child link="torso_shoulder_r_link"/>
+    <origin xyz="0 -0.22 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- 머리(센서 마운트) 프레임 — 전역 카메라를 여기 붙이면 시야가 확보된다 -->
+  <link name="torso_head_link"/>
+  <joint name="torso_head_joint" type="fixed">
+    <parent link="torso_column_link"/>
+    <child link="torso_head_link"/>
+    <origin xyz="0.05 0 0.72" rpy="0 0 0"/>
+  </joint>
+</robot>

@@ -1,0 +1,19 @@
+dual-arm-assembler
+Copyright 2026 kim (akswnddl255@gmail.com)
+
+이 제품은 Apache License 2.0 으로 배포됩니다(LICENSE 참조).
+
+── 이 저장소에 포함된 외부 산출물 ──────────────────────────────────────────
+
+OnRobot RG2 그리퍼 URDF · 메쉬  (urdf/rg2/, meshes/rg2/)
+  원출처: https://github.com/AndrejOrsula/ur5_rg2_ign  (BSD)
+  변경사항: ur5_rg2.urdf 에서 RG2 부분만 추출, mimic 조인트 버그 수정,
+            package:// 경로를 이 패키지로 재지정.
+
+── 이 저장소에 포함되지 않는 것 ────────────────────────────────────────────
+
+모델 라이브러리(Scout·UR·xArm·Robotiq·Franka·Allegro·Clearpath·Robotnik·
+TurtleBot4·RealSense·RB5 등)의 URDF·메쉬는 이 저장소에 포함돼 있지 않습니다.
+scripts/setup_vendor_models.sh 가 각 원저작 저장소에서 직접 clone 하며,
+각각의 라이선스(Apache-2.0 / BSD-2·3 / MIT)를 그대로 따릅니다. 원본은 수정하지
+않고 vendor/ 아래에 그대로 둡니다. 저장소 목록은 그 스크립트에 있습니다.

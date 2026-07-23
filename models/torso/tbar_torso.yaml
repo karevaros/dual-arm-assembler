@@ -1,0 +1,4 @@
+label: T 자형 상체 (어깨간격 600mm)
+file: tbar_torso.urdf
+anchor: tbar_base_link
+prefix: ""

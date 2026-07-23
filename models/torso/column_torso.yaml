@@ -1,0 +1,6 @@
+label: 기둥형 상체 (어깨간격 440mm)
+file: column_torso.urdf
+anchor: torso_base_link
+# 링크명을 이미 torso_* 로 지어 두었으므로 자동 prefix(torso_) 를 붙이지 않는다
+# (안 그러면 torso_torso_base_link 가 된다).
+prefix: ""
