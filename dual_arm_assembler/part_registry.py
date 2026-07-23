@@ -31,8 +31,8 @@ import yaml
 from dual_arm_assembler import paths as _paths
 
 # 슬롯 순서(왼쪽 탭 순서). base 는 루트(부모 없음).
-#   ★ 이 값은 **기본 구성(단팔)** 이고, 실행 시 configs.dual / configs.single 이 갈아끼운다.
-#     코어는 슬롯 이름을 모른다 — 아래 목록과 훅만 보고 동작한다.
+#   ★ 이 값은 코어의 **최소 기본값**이고, 실행 시 configs/*.py 가 갈아끼운다(→ configs/dual.py).
+#     코어는 슬롯 이름을 모른다 — 아래 목록과 확장 훅만 보고 동작한다.
 SLOTS = ["base", "arm", "endeffector", "sensor1", "sensor2"]
 
 SLOT_LABELS = {

@@ -143,11 +143,10 @@ check_urdf /tmp/robot.urdf
 
 ## 양팔 구성 (torso · arm2 · endeffector2)
 
-이 저장소의 기본 구성이 양팔이다. 단팔 구성은 `--single` 로 전환한다.
+이 저장소는 양팔 구성 전용이다.
 
 ```bash
-ros2 run dual_arm_assembler assembler             # 양팔(상체 + 팔·그리퍼 2조 + 센서 3)
-ros2 run dual_arm_assembler assembler --single    # 단팔
+ros2 run dual_arm_assembler assembler    # 상체 + 팔·그리퍼 2조 + 센서 3
 ```
 
 - 상체 모델은 `torso/` 에 있다(`column_torso` 기둥형 440mm · `tbar_torso` T자형 600mm).

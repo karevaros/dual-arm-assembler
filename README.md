@@ -7,8 +7,7 @@
 ROS 2 Humble · Python · PyQt5.
 
 ```bash
-ros2 run dual_arm_assembler assembler              # 양팔 조립 GUI
-ros2 run dual_arm_assembler assembler --single     # 단팔 구성으로
+ros2 run dual_arm_assembler assembler                                   # 조립 GUI
 ros2 run dual_arm_assembler compose_urdf --mounts mounts.yaml -o robot.urdf
 ```
 
@@ -159,16 +158,15 @@ dual_arm_assembler/
 ├── paths.py          모델 폴더 경로 해석
 ├── mesh2urdf.py      STL/STEP → 단일 링크 URDF 변환기
 └── configs/
-    ├── dual.py       ← 양팔 구성 (기본)
-    └── single.py     ← 단팔 구성
+    └── dual.py       ← 슬롯 구성(양팔). 코어는 이 목록만 보고 동작한다
 models/               모델 드롭 폴더(정본)
 urdf/ · meshes/       동봉 모델 자산(RG2)
 scripts/              벤더 모델 clone 스크립트
 ```
 
-**코어는 슬롯 이름을 모른다.** 슬롯 목록·라벨·기본 결합값은 `configs/` 가 정의하고, 코어는
-그 목록만 보고 동작한다. 그래서 다른 구성(팔 3개, 상체 없는 구성 등)을 추가할 때 코어를
-건드릴 필요가 없다 — `configs/` 에 파일 하나를 더 만들면 된다.
+**코어는 슬롯 이름을 모른다.** 슬롯 목록·라벨·기본 결합값은 `configs/dual.py` 가 정의하고,
+코어는 그 목록만 보고 동작한다. 그래서 구성을 바꿀 때(팔 3개, 상체 없는 구성 등) 코어를
+건드릴 필요가 없다 — `configs/` 에 파일을 하나 더 만들고 `cli.py` 가 그걸 고르게 하면 된다.
 
 ## 알아두면 좋은 것
 

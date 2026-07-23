@@ -51,6 +51,19 @@ clone https://github.com/RobotnikAutomation/robotnik_sensors.git humble-devel ro
 clone https://github.com/turtlebot/turtlebot4.git humble turtlebot4                                         # Apache-2.0
 clone https://github.com/iRobotEducation/create3_sim.git humble create3_sim                                 # BSD-3 (turtlebot4 의존)
 
+# ── Scout 메시 경로 셰임 ───────────────────────────────────────────────────
+# 상류 scout_description 은 메시를 meshes/*.dae 에 두는데 urdf/scout_v2.xacro 는
+# meshes/scout_v2/*.dae 를 참조한다(상류 버그). 그대로 두면 베이스가 **투명하게** 뜬다.
+# 참조 경로에 맞춰 복사해 준다(원본은 건드리지 않음).
+SCOUT_M="scout_ros2/scout_description/meshes"
+if [ -d "$SCOUT_M" ] && [ ! -d "$SCOUT_M/scout_v2" ]; then
+  mkdir -p "$SCOUT_M/scout_v2"
+  for f in base_link.dae wheel_type1.dae wheel_type2.dae; do
+    [ -f "$SCOUT_M/$f" ] && cp "$SCOUT_M/$f" "$SCOUT_M/scout_v2/$f"
+  done
+  echo "OK    scout_description 메시 경로 보정(meshes/scout_v2/)"
+fi
+
 # ── Allegro description 셰임 ──────────────────────────────────────────────
 # 상류엔 description 패키지가 없고 URDF·mesh 가 드라이버 패키지
 # (allegro_hand_controllers, allegro_hand_driver·bhand 의존) 안에 있다.

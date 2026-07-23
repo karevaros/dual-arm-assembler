@@ -1,35 +1,30 @@
 #!/usr/bin/env python3
-"""실행 진입점 — 구성(단팔/양팔)을 골라 코어를 띄운다.
+"""실행 진입점.
 
-  dual-assembler            양팔 GUI            (= ros2 run dual_arm_assembler assembler)
-  dual-assembler --single   단팔 GUI
-  dual-compose-urdf …       통합 URDF 생성(기본 양팔 구성, --single 로 단팔)
+  ros2 run dual_arm_assembler assembler        양팔 조립 GUI
+  ros2 run dual_arm_assembler compose_urdf …   mounts.yaml → 통합 URDF
+
+슬롯 구성은 configs/dual.py 가 정의한다. 다른 구성(팔 3개 등)을 쓰고 싶으면 그 파일을
+본떠 configs/ 에 하나 더 만들고 아래 _config() 가 그걸 고르게 하면 된다 — 코어는 슬롯
+이름을 모르므로 코어 코드는 손대지 않는다.
 """
 import sys
 
 
-def _pick_config(argv):
-    """--single / --dual 플래그를 소비하고 구성 모듈을 돌려준다(기본=양팔)."""
-    single = "--single" in argv
-    argv[:] = [a for a in argv if a not in ("--single", "--dual")]
-    if single:
-        from dual_arm_assembler.configs import single as cfg
-    else:
-        from dual_arm_assembler.configs import dual as cfg
-    return cfg
+def _config():
+    from dual_arm_assembler.configs import dual
+    return dual
 
 
 def gui(argv=None):
-    argv = list(sys.argv[1:] if argv is None else argv)
-    cfg = _pick_config(argv)
+    cfg = _config()
     core_app = cfg.apply_gui()
     return core_app.main()
 
 
 def compose(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
-    cfg = _pick_config(argv)
-    cfg.apply()
+    _config().apply()
     from dual_arm_assembler import composer
     return composer.main(argv)
 
