@@ -2,7 +2,7 @@
 """RDA 로봇 어셈블러 (PyQt5 + pyvista 내장 3D).
 
 좌: 파트 슬롯 선택(모델/표시)  |  중앙: 3D 뷰  |  우: 결합 설정(부착 프레임/거리/각도)
-결과: mounts.yaml 저장 → rda_robot.urdf.xacro 가 읽어 통합.
+결과: mounts.yaml 저장 → compose_urdf 가 읽어 통합 URDF 로 조립.
 """
 import os
 import subprocess
@@ -59,7 +59,7 @@ COLLISION_COLOR = "#ff2020"
 COLLISION_OPACITY = 0.30   # 충돌 중인 '비활성' 파트 불투명도
 
 
-# 확장 패키지(rda_dual_assembler 등)가 슬롯별 기본 결합값을 추가로 끼워 넣는 자리.
+# 구성 모듈(configs/*.py)이 슬롯별 기본 결합값을 추가로 끼워 넣는 자리.
 #   {슬롯: Mount} 를 채우면 default_mounts() 결과에 합쳐진다. 코드 복제 없이 구성만 교체.
 EXTRA_DEFAULT_MOUNTS = {}
 
@@ -428,7 +428,7 @@ class Assembler(QtWidgets.QMainWindow):
         tb.addWidget(QtWidgets.QLabel(" 배경: "))
         self.env_combo = QtWidgets.QComboBox()
         self.env_combo.setToolTip(
-            "3D 뷰에 표시할 배경(온실 등). config/environments/ 에 yaml 을 넣으면 자동 등록됩니다.")
+            "3D 뷰에 표시할 배경(작업 환경). environments/ 에 yaml 을 넣으면 자동 등록됩니다.")
         self._populate_environments()
         self.env_combo.currentIndexChanged.connect(self._on_env_changed)
         tb.addWidget(self.env_combo)
@@ -477,7 +477,7 @@ class Assembler(QtWidgets.QMainWindow):
     def _build_base_placement(self):
         """배경(환경) 기준 로봇 베이스 위치/방향 컨트롤."""
         box = QtWidgets.QGroupBox("배경 기준 로봇 위치")
-        box.setToolTip("배경(온실) 안에서 로봇 베이스를 옮깁니다. 배경이 없어도 로봇만 이동합니다.")
+        box.setToolTip("배경 안에서 로봇 베이스를 옮깁니다. 배경이 없어도 로봇만 이동합니다.")
         form = QtWidgets.QFormLayout(box)
         form.setContentsMargins(8, 4, 8, 8)
         self.base_spins = {}
@@ -997,7 +997,7 @@ class Assembler(QtWidgets.QMainWindow):
             self.mounts,
         )
         # 배경 기준 로봇 베이스 배치: 전 슬롯에 오프셋을 곱해 로봇 전체를 옮긴다
-        # (배경은 고정, 로봇만 이동 = 온실 안 로봇 위치 변경).
+        # (배경은 고정, 로봇만 이동 = 작업 환경 안에서의 로봇 위치 변경).
         if not np.allclose(self.base_offset, np.eye(4)):
             world = {s: self.base_offset @ W for s, W in world.items()}
         # 격자를 조작 중인 파트 베이스로 이동

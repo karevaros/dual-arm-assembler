@@ -10,8 +10,7 @@
 share 에는 반영되지 않았고, `test_models.py`(조립기=소스) 는 28/28 통과하는데
 통합 URDF(share) 는 그 모델을 모르는 상태가 하루 동안 유지됐다.
 
-launch 도 같은 원칙이다 — `rda_robot_display.launch.py` 는 이미 mounts.yaml 을
-소스에서 읽는다("앱 저장 후 colcon 재빌드 없이 반영").
+mounts.yaml 도 같은 원칙으로 소스에서 읽는다 — "앱에서 저장하면 재빌드 없이 반영".
 
 해석 순서:
   1. 환경변수 `RDA_MODELS_DIR`      — 명시 지정이 최우선
@@ -27,6 +26,7 @@ import sys
 _PKG = "dual_arm_assembler"
 # 저장소 루트에서 찾을 모델 폴더 이름. (레거시 호환: 예전 워크스페이스 경로도 함께 본다)
 _MODELS_SUBPATH = "models"
+# 이 도구를 기존 워크스페이스에 얹어 쓸 때를 위한 호환 경로(선택).
 _LEGACY_SUBPATH = os.path.join("rda_robot_description", "config", "models")
 
 _cached = None
@@ -45,7 +45,7 @@ def _from_env():
 
 
 def _from_source_tree():
-    """이 파일의 realpath 에서 위로 올라가며 `*/rda_robot_description/config/models` 탐색.
+    """이 파일의 realpath 에서 위로 올라가며 `models/`(및 호환 경로)를 탐색.
 
     realpath 를 쓰는 이유: colcon --symlink-install 이면 설치본의 __file__ 이
     build/ 아래를 가리켜도 realpath 는 소스로 풀린다(실측 확인).

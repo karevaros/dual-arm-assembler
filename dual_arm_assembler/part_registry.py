@@ -45,7 +45,7 @@ SLOT_LABELS = {
 
 # ── 확장 훅 (다른 패키지가 슬롯 구성을 갈아끼울 때 쓰는 자리) ──────────────
 #   이 파일 자체는 **단팔 구성**이 정본이다. 양팔 구성은 별도 패키지
-#   `rda_dual_assembler` 가 아래 값들을 채워 넣어 만든다(코드 복제 없이 구성만 교체).
+#   `configs/dual.py` 가 아래 값들을 채워 넣어 만든다(코드 복제 없이 구성만 교체).
 #
 # 기본값이 '꺼짐'인 슬롯 — 체크해야 조립·저장에 들어간다.
 OPTIONAL_SLOTS = set()
@@ -113,28 +113,6 @@ BUILTIN_SLOT_MODELS = {
     "sensor1": ["d405", "d435i"],
     "sensor2": ["d435i", "d405"],
 }
-
-# 통합 xacro 내보내기: 슬롯 -> 매크로 호출 정보.
-# (rda_robot.urdf.xacro 가 mounts.yaml 을 읽어 parent/xyz/rpy 를 채운다)
-EXPORT_MACRO = {
-    "arm": {
-        "kind": "rb_6dof",
-        "include": "$(find rbpodo_description)/robots/rb_6dof.xacro",
-    },
-    "endeffector": {
-        "kind": "onrobot_rg2",
-        "include": "$(find dual_arm_assembler)/urdf/rg2/onrobot_rg2_macro.xacro",
-    },
-    "sensor1": {
-        "kind": "sensor_d405",
-        "include": "$(find realsense2_description)/urdf/_d405.urdf.xacro",
-    },
-    "sensor2": {
-        "kind": "sensor_d435i",
-        "include": "$(find realsense2_description)/urdf/_d435i.urdf.xacro",
-    },
-}
-
 
 def models_dir():
     """모델 드롭 폴더(정본=소스 트리). 해석 규칙·근거는 paths.py 참조."""

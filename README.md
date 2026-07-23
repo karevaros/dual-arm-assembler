@@ -62,7 +62,7 @@ base ── torso ─┬─ arm  ── endeffector  ── sensor1     1번 팔
 
 ```bash
 mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src
-git clone https://github.com/<your-account>/dual-arm-assembler.git
+git clone https://github.com/karevaros/dual-arm-assembler.git
 ```
 
 ### 3) 파이썬 의존
