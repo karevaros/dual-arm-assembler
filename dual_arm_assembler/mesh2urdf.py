@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """외부 3D 파일(메시/STEP) → 강체 1링크 URDF 변환기.
 
-조립기의 폴더 드롭 등록(`config/models/<슬롯>/`)에 바로 떨어지므로,
+조립기의 폴더 드롭 등록(`models/<슬롯>/`)에 바로 떨어지므로,
 변환 후 조립기에서 '🔄 모델 새로고침' 하면 드롭다운에 뜬다.
 
 ■ 할 수 있는 것 / 없는 것
@@ -38,7 +38,9 @@ import yaml
 
 from dual_arm_assembler import paths as _paths
 
-SLOTS = ["base", "arm", "endeffector", "sensor1", "sensor2"]
+# 파일을 떨어뜨릴 수 있는 드롭 폴더. arm2·endeffector2·sensor3 는 각각 arm·endeffector·
+# sensor1 폴더를 공유하므로 여기에 없다(그 폴더에 넣으면 양쪽 드롭다운에 함께 나온다).
+SLOTS = ["base", "torso", "arm", "endeffector", "sensor1", "sensor2"]
 CAD_EXT = {".step", ".stp", ".iges", ".igs"}
 # 모델 폴더 경로는 paths.py 가 단일 정본으로 해석한다(하드코딩 금지).
 
@@ -287,7 +289,7 @@ def main(argv=None):
     p.add_argument("--collision", default="hull", choices=["hull", "simplify", "same"],
                    help="충돌 메시 (기본 hull=볼록껍질)")
     p.add_argument("--max-faces", type=int, default=2000, help="--collision simplify 목표 면수")
-    p.add_argument("--out-dir", help="모델 폴더 루트 (기본 RDA_MODELS_DIR 또는 description/config/models)")
+    p.add_argument("--out-dir", help="모델 폴더 루트 (기본 RDA_MODELS_DIR 또는 저장소의 models/)")
     a = p.parse_args(argv)
     try:
         convert(a.mesh, a.slot, a.name, a.label, a.scale, a.density,

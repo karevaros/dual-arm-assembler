@@ -1,7 +1,7 @@
 # dual-arm-assembler
 
 **양팔 로봇을 마우스로 조립해 통합 URDF 를 만드는 도구.**
-모바일 베이스 · 상체(토르소) · 로봇팔 2 · 그리퍼 2 · 센서 2 를 골라 결합 위치를 맞추면,
+모바일 베이스 · 상체(토르소) · 로봇팔 2 · 그리퍼 2 · 센서 3 을 골라 결합 위치를 맞추면
 하나의 URDF 로 합쳐 준다. 결합 중 자충돌은 실시간으로 빨갛게 표시된다.
 
 ROS 2 Humble · Python · PyQt5.
@@ -9,7 +9,11 @@ ROS 2 Humble · Python · PyQt5.
 ```bash
 ros2 run dual_arm_assembler assembler                                   # 조립 GUI
 ros2 run dual_arm_assembler compose_urdf --mounts mounts.yaml -o robot.urdf
+ros2 run dual_arm_assembler mesh2urdf bracket.stl --slot sensor1        # 3D 파일 → 모델 등록
 ```
+
+📄 **문서**: [도구와 모듈](docs/tools.md) · [mesh2urdf 사용법](docs/mesh2urdf.md) ·
+[모델 폴더 규약](models/README.md)
 
 ---
 
@@ -87,6 +91,10 @@ cd ~/ros2_ws && colcon build --symlink-install --packages-select dual_arm_assemb
 source install/setup.bash
 ```
 
+> ⚠ `--packages-select` 없이 그냥 `colcon build` 를 돌리지 말 것. 4번에서 받은 `vendor/`
+> 안에는 우리가 쓰지 않는 드라이버·SDK 패키지까지 들어 있어서 전체 빌드는 실패한다
+> (모델에 필요한 description 패키지는 setup 스크립트가 이미 빌드해 둔다).
+
 ## 사용
 
 ### 조립 GUI
@@ -134,6 +142,21 @@ prefix: "arm_"                 # (선택) 생략 시 슬롯 접두사 자동. ""
 yaml 없이 `.urdf`/`.xacro` 만 넣어도 등록된다(라벨=파일명, anchor=루트).
 GUI 의 **모델 새로고침** 버튼으로 재시작 없이 다시 스캔한다.
 
+### CAD 파일에서 모델 만들기 (mesh2urdf)
+
+브래킷·플레이트처럼 **관절 없는 강체 파트**는 3D 파일에서 바로 변환할 수 있다.
+단위 추정·관성 계산·충돌 메시 생성까지 자동으로 하고, 모델 폴더에 등록까지 해 준다.
+
+```bash
+ros2 run dual_arm_assembler mesh2urdf bracket.stl --slot sensor1
+ros2 run dual_arm_assembler mesh2urdf tool.step --slot endeffector \
+    --name tool_x --density 7850 --origin bottom      # STEP 은 freecad 필요
+```
+
+관절이 있는 파트는 3D 파일에 관절 정보가 없어 불가능하다 — SolidWorks/Fusion360/Onshape
+전용 익스포터를 쓴다. 옵션·주의사항(특히 오목한 파트의 충돌 메시)은
+→ [`docs/mesh2urdf.md`](docs/mesh2urdf.md)
+
 ### 상체 모델
 
 `models/torso/` 에 두 종류가 들어 있다.
@@ -162,11 +185,13 @@ dual_arm_assembler/
 models/               모델 드롭 폴더(정본)
 urdf/ · meshes/       동봉 모델 자산(RG2)
 scripts/              벤더 모델 clone 스크립트
+docs/                 tools.md(도구·모듈 지도) · mesh2urdf.md(변환기 사용법)
 ```
 
 **코어는 슬롯 이름을 모른다.** 슬롯 목록·라벨·기본 결합값은 `configs/dual.py` 가 정의하고,
 코어는 그 목록만 보고 동작한다. 그래서 구성을 바꿀 때(팔 3개, 상체 없는 구성 등) 코어를
 건드릴 필요가 없다 — `configs/` 에 파일을 하나 더 만들고 `cli.py` 가 그걸 고르게 하면 된다.
+모듈별 역할과 확장 훅은 → [`docs/tools.md`](docs/tools.md)
 
 ## 알아두면 좋은 것
 

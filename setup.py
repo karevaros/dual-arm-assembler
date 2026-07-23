@@ -26,6 +26,7 @@ setup(
         ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
         ("share/" + package_name, ["package.xml", "README.md", "LICENSE", "NOTICE"]),
         ("share/" + package_name + "/scripts", glob("scripts/*")),
+        ("share/" + package_name + "/docs", glob("docs/*.md")),
     ] + data_tree("models", "share/" + package_name + "/models")
       + data_tree("meshes", "share/" + package_name + "/meshes")
       + data_tree("urdf", "share/" + package_name + "/urdf"),
