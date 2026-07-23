@@ -105,8 +105,9 @@ cd "$WS" || exit 1
 set +u
 source /opt/ros/humble/setup.bash
 set -u
+# ⚠ realsense2_description 은 realsense2_camera_msgs 를 필요로 한다(빼면 빌드 실패).
 colcon build --symlink-install --packages-select \
-  scout_description rbpodo_description realsense2_description \
+  scout_description rbpodo_description realsense2_camera_msgs realsense2_description \
   ur_description xarm_description onrobot_rg_description robotiq_description \
   franka_description allegro_hand_description \
   robotnik_description robotnik_sensors \
