@@ -31,8 +31,9 @@ ros2 run dual_arm_assembler compose_urdf --mounts mounts.yaml -o robot.urdf
 ## 슬롯 구성
 
 ```
-base ── torso ─┬─ arm  ── endeffector      1번 팔
-               └─ arm2 ── endeffector2     2번 팔
+base ── torso ─┬─ arm  ── endeffector  ── sensor1     1번 팔 + 손목 센서
+               │                                       sensor2 = 전역/머리 센서
+               └─ arm2 ── endeffector2 ── sensor3     2번 팔 + 손목 센서
 ```
 
 | 슬롯 | 설명 |
@@ -41,10 +42,12 @@ base ── torso ─┬─ arm  ── endeffector      1번 팔
 | ② torso | 상체 — 두 팔의 어깨 위치를 만든다 *(기본 꺼짐)* |
 | ③ arm / ④ endeffector | 1번 팔·그리퍼 |
 | ⑤ arm2 / ⑥ endeffector2 | 2번 팔·그리퍼 *(기본 꺼짐)* |
-| ⑦ sensor1 / ⑧ sensor2 | 센서(손끝·전역 등) |
+| ⑦ sensor1 | 1번 팔 손목 센서 |
+| ⑧ sensor2 | 전역/머리 센서 (상체의 `torso_head_link` 에 붙이면 시야가 좋다) |
+| ⑨ sensor3 | 2번 팔 손목 센서 *(기본 꺼짐)* |
 
-- ②⑤⑥은 체크해야 조립·저장에 들어간다 → 단팔로 저장해 둔 설정을 열어도 없던 파트가 생기지 않는다.
-- ⑤⑥은 ③④와 **같은 모델 폴더**를 읽는다. 팔 모델을 하나 넣으면 양쪽 드롭다운에 나온다.
+- ②⑤⑥⑨는 체크해야 조립·저장에 들어간다 → 단팔로 저장해 둔 설정을 열어도 없던 파트가 생기지 않는다.
+- ⑤⑥⑨는 ③④⑦과 **같은 모델 폴더**를 읽는다. 팔·센서 모델을 하나 넣으면 양쪽 드롭다운에 나온다.
 - ⑤⑥의 링크에는 접두사가 **강제**된다(`arm2_link0`, `endeffector2_rg2_hand` …).
   같은 모델을 두 팔에 쓰면 `link0`·`tcp` 가 그대로 충돌하기 때문이다.
 
@@ -96,7 +99,8 @@ ros2 run dual_arm_assembler assembler
 1. **② 상체** 체크 → 모델 선택 → 베이스 상판 위 위치 조정
 2. **③ 로봇팔 1** 의 '붙일 파트'를 상체로, 부착 프레임을 `torso_shoulder_l_link` 로
 3. **⑤ 로봇팔 2** 체크 → 부착 프레임 `torso_shoulder_r_link`, Roll −90°(바깥을 보게)
-4. **④⑥ 엔드이펙터** 를 각 팔의 `tcp` 에 부착
+4. **④⑥ 엔드이펙터** 를 각 팔의 `tcp` 에 부착. 손목 카메라를 쓰면 **⑦⑨ 센서**를
+   각 그리퍼의 `rg2_hand` 에, 전역 카메라(**⑧**)는 상체의 `torso_head_link` 에 붙인다
    ⚠ 부착 프레임은 **모델 로컬 이름**(`tcp`)으로 적는다. 접두사는 컴포저가 붙인다
    (`arm2_tcp` 라고 쓰면 두 번 붙는다).
 5. `Ctrl+S` 저장 → `mounts.yaml`
@@ -115,6 +119,7 @@ check_urdf robot.urdf
 ### 모델 추가
 
 `models/<슬롯>/` 에 파일을 넣으면 끝이다(슬롯 = `base`·`torso`·`arm`·`endeffector`·`sensor1`·`sensor2`).
+2번 팔·그리퍼·센서 3 은 각각 `arm`·`endeffector`·`sensor1` 폴더를 공유하므로 따로 넣지 않는다.
 
 ```yaml
 # models/arm/my_arm.yaml

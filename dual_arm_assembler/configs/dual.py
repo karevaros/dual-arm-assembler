@@ -1,7 +1,8 @@
 """양팔 구성 — 이 프로젝트의 기본 구성.
 
-    base ── torso ─┬─ arm  ── endeffector      1번 팔
-                   └─ arm2 ── endeffector2     2번 팔 (arm2_ / endeffector2_ 접두사 강제)
+    base ── torso ─┬─ arm  ── endeffector  ── sensor1   1번 팔(+손목 센서)
+                   │                                     sensor2 = 전역/머리 센서
+                   └─ arm2 ── endeffector2 ── sensor3   2번 팔(+손목 센서, arm2_ 접두사)
 
 코어(GUI·컴포저·충돌검사)는 슬롯 이름을 모른다. 이 파일이 슬롯 목록과 기본값만 정의하면
 같은 코어가 단팔·양팔·그 밖의 구성으로 동작한다(→ configs/single.py 와 비교).
@@ -18,7 +19,7 @@ NAME = "양팔"
 APP_NAME = "Dual-Arm Assembler — 양팔 로봇 어셈블러"
 
 SLOTS = ["base", "torso", "arm", "endeffector", "arm2", "endeffector2",
-         "sensor1", "sensor2"]
+         "sensor1", "sensor2", "sensor3"]
 
 SLOT_LABELS = {
     "base": "① 베이스(모바일)",
@@ -27,16 +28,19 @@ SLOT_LABELS = {
     "endeffector": "④ 엔드이펙터 1",
     "arm2": "⑤ 로봇팔 2",
     "endeffector2": "⑥ 엔드이펙터 2",
-    "sensor1": "⑦ 센서 1",
-    "sensor2": "⑧ 센서 2",
+    "sensor1": "⑦ 센서 1 (1번 손목)",
+    "sensor2": "⑧ 센서 2 (전역/머리)",
+    "sensor3": "⑨ 센서 3 (2번 손목)",
 }
 
 # 체크해야 조립·저장에 들어가는 슬롯(기본 꺼짐).
 #   단팔로 저장해 둔 mounts.yaml 을 열었을 때 없던 파트가 갑자기 생기지 않게 한다.
-OPTIONAL_SLOTS = {"torso", "arm2", "endeffector2"}
+#   sensor3 도 여기 넣는다 — 2번 팔이 꺼져 있으면 붙일 곳이 없기 때문.
+OPTIONAL_SLOTS = {"torso", "arm2", "endeffector2", "sensor3"}
 
 # 2번 팔/그리퍼는 1번과 같은 모델 폴더를 읽는다(모델을 두 번 넣을 필요 없음).
-SLOT_MODEL_ALIAS = {"arm2": "arm", "endeffector2": "endeffector"}
+#   센서 3 도 센서 1 폴더를 공유한다(센서 모델을 세 번 넣을 필요 없음).
+SLOT_MODEL_ALIAS = {"arm2": "arm", "endeffector2": "endeffector", "sensor3": "sensor1"}
 
 # 링크명 계약(prefix: "")을 무시하고 슬롯 접두사를 강제할 슬롯.
 NO_CONTRACT_SLOTS = {"arm2", "endeffector2"}
@@ -45,12 +49,14 @@ BUILTIN_SLOT_MODELS = {
     "torso": [],                     # 폴더 드롭 모델만(models/torso/)
     "arm2": ["rb5_850e"],
     "endeffector2": ["onrobot_rg2"],
+    "sensor3": ["d405", "d435i"],    # 2번 손목 카메라(기본 근접용 D405)
 }
 
 SLOT_COLORS = {
     "torso": "#6f7d8c",
     "arm2": "#d9a441",
     "endeffector2": "#6bb58a",
+    "sensor3": "#c96a92",            # 센서 1(#c04a5e) 과 같은 계열, 구분되는 톤
 }
 
 
@@ -66,6 +72,9 @@ def extra_mounts():
         # ⚠ parent_frame 은 **모델 로컬 이름**을 쓴다 — 접두사는 컴포저가 붙인다
         #   (arm2 → arm2_tcp). 여기에 arm2_tcp 라고 적으면 접두사가 두 번 붙는다.
         "endeffector2": Mount("arm2", "tcp", [0.0, 0.0, 0.0], [0, 0, 0]),
+        # 2번 손목 카메라 — 1번 손목 센서(sensor1)와 같은 자리에 대칭으로.
+        #   parent_frame 은 모델 로컬 이름(rg2_hand) → 컴포저가 endeffector2_ 를 붙인다.
+        "sensor3": Mount("endeffector2", "rg2_hand", [0.02, 0.0, 0.03], [0, 0, 0]),
     }
 
 
